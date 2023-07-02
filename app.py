@@ -10,6 +10,10 @@ messages = ['Kinoko is wonrderful!', 'Takenoko is awesome!']
 def top():
     return render_template('index.html', **vars())
 
+@app.route('/api/vl/votes')
+def vote_api():
+    return jsonaify({'kinoko':kinoko_count, 'takenoko':takenoko_count})
+
 @app.route('/vote', methods=['POST'])
 def answer():
     global kinoko_count, takenoko_count, messages
@@ -33,6 +37,7 @@ def answer():
         message = re.sub(r'>', r'&gt;', message)
         message = re.sub(r'\*(.+)\*', r'<strong>\1</strong>', message)
         message = re.sub(r'(\d{2,3})-\d+-\d+', r'\1-****-****', message)
+        message = re.sub(r'(http://[^\s]+|https://[^\s]+)', r'<a href="\1">\1</a>', message)
         message_html += '<div class="alert {1}" role="alert">{0}</div>\n'.format(
             message, 'alert-warning ms-5' if i % 2 == 0 else 'alert-success me-5')
 
